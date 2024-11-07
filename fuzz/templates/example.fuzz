@@ -1,0 +1,5 @@
+[template]
+<a href='_FUZZ_java_FUZZ_script_FUZZ_:alert()'>G</a>
+
+[canary]
+javascript:alert()
