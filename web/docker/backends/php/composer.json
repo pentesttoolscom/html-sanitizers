@@ -1,0 +1,8 @@
+{
+    "require": {
+        "symfony/html-sanitizer": "^7.1",
+        "ezyang/htmlpurifier": "^4.17",
+        "typo3/html-sanitizer": "^2.1",
+        "bramus/router": "~1.6"
+    }
+}

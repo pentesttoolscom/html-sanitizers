@@ -1,0 +1,17 @@
+services:
+  nginx:
+    image: "{{nginx_image}}"
+    ports:
+      - "127.0.0.1:{{nginx_port}}:80"
+    networks:
+      - backend
+  {% for service in backend_services %}
+  {{service.slug}}:
+    image: "{{service.image}}"
+    expose:
+      - 80
+    networks:
+      - backend
+  {% endfor %}
+networks:
+  backend:

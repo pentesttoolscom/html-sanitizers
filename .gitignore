@@ -1,1 +1,3 @@
 .venv
+web/docker-compose.yaml
+web/docker/nginx
