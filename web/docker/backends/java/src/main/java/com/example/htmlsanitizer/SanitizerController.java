@@ -12,30 +12,28 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SanitizerController {
 
-    @GetMapping("/sanitize")
-    public String sanitize(
-        @RequestParam String html,
-        @RequestParam String method
-    ) {
+    @GetMapping("/owasp")
+    public String owasp(@RequestParam String text) {
         String sanitizedHtml;
-        if ("owasp".equals(method)) {
-            PolicyFactory policy = new HtmlPolicyBuilder()
-                .allowElements("a")
-                .allowUrlProtocols("https")
-                .allowAttributes("href")
-                .onElements("a")
-                .requireRelNofollowOnLinks()
-                .toFactory();
-            sanitizedHtml = policy.sanitize(html);
-        } else if ("jsoup".equals(method)) {
-            Document doc = Jsoup.parse(html);
-            Safelist whitelist = Safelist.basicWithImages();
-            whitelist.addTags("a");
-            whitelist.addAttributes(":all", "href");
-            sanitizedHtml = Jsoup.clean(doc.body().html(), whitelist);
-        } else {
-            sanitizedHtml = "Invalid method specified.";
-        }
+        PolicyFactory policy = new HtmlPolicyBuilder()
+            .allowElements("a")
+            .allowUrlProtocols("https")
+            .allowAttributes("href")
+            .onElements("a")
+            .requireRelNofollowOnLinks()
+            .toFactory();
+        sanitizedHtml = policy.sanitize(text);
+        return sanitizedHtml;
+    }
+
+    @GetMapping("/jsoup")
+    public String jsoup(@RequestParam String text) {
+        String sanitizedHtml;
+        Document doc = Jsoup.parse(text);
+        Safelist whitelist = Safelist.basicWithImages();
+        whitelist.addTags("a");
+        whitelist.addAttributes(":all", "href");
+        sanitizedHtml = Jsoup.clean(doc.body().html(), whitelist);
         return sanitizedHtml;
     }
 }

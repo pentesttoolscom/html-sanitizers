@@ -1,6 +1,7 @@
 services:
   nginx:
     image: "{{nginx_image}}"
+    container_name: "sanitizer-nginx"
     ports:
       - "127.0.0.1:{{nginx_port}}:80"
     networks:
@@ -8,6 +9,7 @@ services:
   {% for service in backend_services %}
   {{service.slug}}:
     image: "{{service.image}}"
+    container_name: "sanitizer-{{service.slug}}"
     expose:
       - 80
     networks:

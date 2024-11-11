@@ -3,7 +3,7 @@ require 'nokogiri'
 require 'rails-html-sanitizer'
 require 'sanitize'
 
-set :port, 8081
+set :port, 80
 set :bind, '0.0.0.0' # Bind to all interfaces
 
 class Sanitize
@@ -125,33 +125,28 @@ get '/' do
   send_file File.join(settings.public_folder, 'index.html')
 end
 
-get '/sanitize' do
-  html_input = params['html'] || ''
-  method = params['method'] || 'nokogiri'
+get '/rails-html-sanitizer' do
+  html_input = params['text'] || ''
+  begin
+    Rails::Html::WhiteListSanitizer.allowed_tags << 'a'
+    Rails::Html::WhiteListSanitizer.allowed_attributes.merge(['href', 'target', 'rel'])
+    sanitizer = Rails::Html::SafeListSanitizer.new
+    sanitized_html = sanitizer.sanitize(html_input)
+    return sanitized_html
+  rescue Exception => e
+    status 500
+    return e.message
+  end
+end
 
-  case method
-  when 'rails-html-sanitizer'
-    begin
-      Rails::Html::WhiteListSanitizer.allowed_tags << 'a'
-      Rails::Html::WhiteListSanitizer.allowed_attributes.merge(['href', 'target', 'rel'])
-      sanitizer = Rails::Html::SafeListSanitizer.new
-      sanitized_html = sanitizer.sanitize(html_input)
-      return sanitized_html
-    rescue Exception => e
-      status 500
-      return e.message
-    end
-  when 'rgrove/sanitize'
-    begin
-      oembed_html = Sanitize.fragment(html_input, Sanitize::Config::MASTODON_OEMBED)
-      strict_html = Sanitize.fragment(html_input, Sanitize::Config::MASTODON_STRICT)
-      return "Strict: #{strict_html}\nOembed: #{oembed_html}"
-    rescue Exception => e
-      status 500
-      return e.message
-    end
-    
-  else
-    return 'Invalid method specified'
+get '/rgrove-sanitize' do
+  html_input = params['text'] || ''
+  begin
+    oembed_html = Sanitize.fragment(html_input, Sanitize::Config::MASTODON_OEMBED)
+    strict_html = Sanitize.fragment(html_input, Sanitize::Config::MASTODON_STRICT)
+    return "Strict: #{strict_html}\nOembed: #{oembed_html}"
+  rescue Exception => e
+    status 500
+    return e.message
   end
 end

@@ -3,9 +3,11 @@ using Ganss.Xss;
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-app.MapPost("/html-sanitizer", async (HttpRequest req) => {
-    var form = await req.ReadFormAsync();
-    var text = form["text"].ToString();
+app.MapGet("/html-sanitizer", (HttpRequest req) => {
+    var text = req.Query["text"].ToString();
+    if (string.IsNullOrEmpty(text)) {
+        return Results.Text("No text given", "plain/text");
+    }
     if (string.IsNullOrEmpty(text)) {
         return Results.Text("No text given", "plain/text");
     }

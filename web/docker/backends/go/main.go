@@ -12,14 +12,14 @@ func safeHTML(s string) template.HTML {
 	return template.HTML(s)
 }
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	html := r.URL.Query().Get("html")
+func bluemondayHandler(w http.ResponseWriter, r *http.Request) {
+	text := r.URL.Query().Get("text")
 	var sanitizedHTML string
 
-	if html != "" {
+	if text != "" {
 		p := bluemonday.UGCPolicy()
 
-		sanitizedHTML = p.Sanitize(html)
+		sanitizedHTML = p.Sanitize(text)
 	}
 
 	tmpl, err := template.New("index.html").Funcs(template.FuncMap{
@@ -40,7 +40,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/bluemonday", bluemondayHandler)
 
 	fmt.Println("Starting server at :80")
 	if err := http.ListenAndServe(":80", nil); err != nil {

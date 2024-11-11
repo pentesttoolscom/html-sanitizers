@@ -8,7 +8,7 @@ http {
         server_name localhost;
         {% for backend in servers %}
         location /{{backend}}/ {
-            proxy_pass http://{{backend}}/;
+            proxy_pass http://sanitizer-{{backend}}/;
             proxy_redirect http://$host/ http://$host:$server_port/;
         }
         {% endfor %}
