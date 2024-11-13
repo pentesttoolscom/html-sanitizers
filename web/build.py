@@ -74,7 +74,7 @@ def main():
         return
     generate_compose_file(backends, nginx_image_tag, nginx_port)
     click.secho("Build finished successfully", fg='green')
-    click.secho("Run docker-compose up -d")
+    click.secho("Run docker compose up -d")
 
 if __name__ == "__main__":
     main()

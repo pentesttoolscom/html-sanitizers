@@ -1,6 +1,6 @@
-<?php 
+<?php
 // Require composer autoloader
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . "/vendor/autoload.php";
 
 use TYPO3\HtmlSanitizer\Builder\CommonBuilder;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
@@ -10,20 +10,20 @@ use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 $router = new \Bramus\Router\Router();
 
 // Define routes
-$router->get('typo3', function() {
-    $payload = (string)($_GET['text'] ?? '');
+$router->get("typo3", function () {
+    $payload = (string) ($_GET["text"] ?? "");
     if (empty($payload)) {
-        $payload = 'No text given';
+        $payload = "No text given";
     }
 
     $sanitizer = (new CommonBuilder())->build();
     echo $sanitizer->sanitize($payload);
 });
 
-$router->get('html-purifier', function() {
-    $payload = (string)($_GET['text'] ?? '');
+$router->get("html-purifier", function () {
+    $payload = (string) ($_GET["text"] ?? "");
     if (empty($payload)) {
-        $payload = 'No text given';
+        $payload = "No text given";
     }
 
     $config = HTMLPurifier_Config::createDefault();
@@ -31,15 +31,23 @@ $router->get('html-purifier', function() {
     echo $purifier->purify($payload);
 });
 
-$router->get("symfony-sanitizer", function() {
+$router->get("symfony-sanitizer", function () {
     $htmlSanitizer = new HtmlSanitizer(
         (new HtmlSanitizerConfig())->allowSafeElements()
     );
-    $payload = (string)($_GET['text'] ?? '');
+    $payload = (string) ($_GET["text"] ?? "");
     if (empty($payload)) {
-        $payload = 'No text given';
+        $payload = "No text given";
     }
     echo $htmlSanitizer->sanitize($payload);
+});
+
+$router->get("/strip-tags", function () {
+    $payload = (string) ($_GET["text"] ?? "");
+    if (empty($payload)) {
+        $payload = "No text given";
+    }
+    echo strip_tags($payload);
 });
 
 // Run it!
