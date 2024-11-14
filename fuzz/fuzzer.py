@@ -118,15 +118,17 @@ def generate_payloads(template: str) -> set[str]:
     click.secho(f"[SUCCESS] Generated {len(payloads)} payloads", fg="green")
     return payloads
 
+
 def pretty_print(text: str) -> str:
     """Returns the given string with unprintable ASCII characters URL encoded."""
     pretty = ""
     for char in text:
-        if ord(char) < 0x20 or ord(char) > 0x7f:
+        if ord(char) < 0x20 or ord(char) > 0x7F:
             pretty += quote_plus(char)
         else:
             pretty += char
     return pretty
+
 
 def does_payload_execute(
     session: requests.Session, request_data: RequestData, payload: str, canary
@@ -146,15 +148,21 @@ def does_payload_execute(
             timeout=5,
         )
         if canary in response.text:
-            click.secho("\n[POSSIBLE MATCH]", fg="yellow")
-            click.secho(
-                f"Payload: {pretty_print(payload)},\nResponse: {pretty_print(response.text)}"
+            click.echo(
+                click.style("\n\n[POSSIBLE MATCH]\n", fg="yellow")
+                + click.style(
+                    f"Payload: {pretty_print(payload)},\n"
+                    f"Response: {pretty_print(response.text.strip())}\n"
+                )
             )
             return True
         elif response.status_code == 500:
-            click.secho("\n[POSSIBLE MATCH]", fg="yellow")
-            click.secho(
-                f"Caught exception for payload: {pretty_print(payload)},\nexception: {pretty_print(response.text)}"
+            click.echo(
+                click.style("\n\n[SERVER ERROR]\n", fg="yellow")
+                + click.style(
+                    f"Caught exception for payload: {pretty_print(payload)},\n"
+                    f"exception: {pretty_print(response.text.strip())}\n"
+                )
             )
             return True
     except requests.RequestException:
