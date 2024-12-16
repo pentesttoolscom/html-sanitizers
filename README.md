@@ -1,5 +1,5 @@
 # Server side sanitizers
-Research on fuzzing HTML sanitizers in popular programming languages
+Research on fuzzing HTML sanitizers in popular programming languages. You can read the accompanying presention [here](https://docs.google.com/presentation/d/1QrGNP6-8VD9hPVxJo6EoDH1eS4PfHmR5NyFhCKzdPr8/edit#slide=id.g213dfcddbe2_0_14).
 
 ## Project Structure
 
